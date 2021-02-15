@@ -1,5 +1,6 @@
 package com.example.jacksontask.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,36 +23,85 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class JacksonController {
-
-	@GetMapping("/view-res")
 	
-	public ResponseEntity<?> viewRes() throws FileNotFoundException, IOException, ParseException {
+	
+	@GetMapping("/view-jackson")
+	
+public ResponseEntity<?> viewRes() throws FileNotFoundException, IOException, ParseException {
+	
 		List<Map<String, Object>> mainlist = new ArrayList<Map<String, Object>>();
 		Set<Object> set = new LinkedHashSet<Object>();
-		JSONParser parser = new JSONParser();
 
-		Object object = parser.parse(new FileReader("src/main/resources/JsonFile.json"));
-		JSONArray jsonObject = (JSONArray) object;
-		ObjectMapper om = new ObjectMapper();
-		JsonNode nodes = om.readTree(jsonObject.toJSONString());
-		
+		JsonNode nodes = new  ObjectMapper().readTree(new File("src/main/resources/JsonFile.json"));
+
 		for (String port : nodes.findValuesAsText("destTransPort")) set.add(port);
 
 		for (Object i : set) {
 			Map<String, Object> map=new LinkedHashMap<String, Object>();
-			//int s = Integer.valueOf((String) i);
-			List<Object> list = new LinkedList<Object>();
+			List<Object> list1 = new LinkedList<Object>();
+			
 			for (JsonNode node : nodes) {
 				
 				if (node.get("destTransPort").asInt() == Integer.valueOf((String) i))
 					{
-					list.add(node);
+					list1.add(node);
 					}
 			}
 			map.put("destTransport", i);
-			map.put("topHits", list);
+			map.put("topHits", list1);
 			mainlist.add(map);
 		}
 		return ResponseEntity.ok(mainlist);
 	}
 }
+
+//	@GetMapping("/view-res")
+//	public ResponseEntity<?> viewRes() throws FileNotFoundException, IOException, ParseException {
+//		
+//		
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		
+//		List<Map<String, Object>> mainlo = new ArrayList<Map<String, Object>>();
+//		
+//		LinkedHashSet<Object> set = new LinkedHashSet<Object>();
+//		LinkedHashSet<Object> nameset = new LinkedHashSet<Object>();
+//		
+//		
+//		JSONParser parser = new JSONParser();
+//			Object object = parser.parse(new FileReader("src/main/resources/JsonFile.json"));
+//		JSONArray jsonObject = (JSONArray) object;
+//		
+//		JsonNode node = objectMapper.readTree(jsonObject.toJSONString());
+//		
+//		for(String s : node.findValuesAsText("destTransPort")) {
+//			set.add(s);
+//		}
+//		for (String s : node.findValuesAsText("destInterfaceName")) {
+//			nameset.add(s);
+//		}
+//		
+//		for(Object obname : nameset) {	
+//			for(Object obj :set) {
+//				Map<String, Object> map=new LinkedHashMap<String, Object>();
+//				List<Object> list = new LinkedList<Object>();
+//				int in = Integer.valueOf((String) obj);
+//			
+//				for(JsonNode nodes:node) {
+//					if(nodes.get("destTransPort").asInt()==in) {
+//						if(nodes.get("destInterfaceName").asText().equals(obname)) {
+//							list.add(nodes);
+//						}
+//					}
+//				}	
+//				if(!(list.isEmpty())) {
+//					map.put("destTransPort", in);
+//					map.put("destInterfaceName",obname);
+//					map.put("topHits", list);
+//					mainlo.add(map);
+//				}
+//			}
+//		}
+//		return ResponseEntity.ok(mainlo);
+//	}
+//}
+	
