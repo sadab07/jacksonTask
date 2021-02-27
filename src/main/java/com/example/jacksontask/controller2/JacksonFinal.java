@@ -45,7 +45,8 @@ public ResponseEntity<?> viewRes() throws FileNotFoundException, IOException, Pa
 			for (JsonNode node : nodes) {
 				
 				if (node.get("destTransPort").asInt() == Integer.valueOf((String) i))
-					{Map<String , Object> maps=new HashMap<>();
+					{
+					Map<String , Object> maps=new HashMap<>();
 					
 					maps.put("destIp", node.get("destIp"));
 					maps.put("msg", node.get("msg"));
